@@ -2,7 +2,7 @@ from.import views
 from django.urls import path
 
 urlpatterns=[
-    path('',views.postuserdetails,name="routes"),
+    path('signup/',views.postuserdetails,name="routes"),
     
     
 ]
