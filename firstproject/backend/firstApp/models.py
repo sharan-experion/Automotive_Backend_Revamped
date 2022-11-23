@@ -11,4 +11,7 @@ class userDetails(models.Model):
     mobilenumber = models.IntegerField(max_length = 10)
     emailId = models.EmailField(max_length = 200,unique=True)
     password = models.CharField(max_length = 20)
+
+    def _str_(self):
+     return self.name
 # Create your models here.

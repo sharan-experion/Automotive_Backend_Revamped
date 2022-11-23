@@ -33,7 +33,7 @@ from django.core import serializers
     
 #     return Response(serializer.data)
 
-@api_view(['GET','POST'])
+@api_view(['POST'])
 
 def postuserdetails(request):
 
