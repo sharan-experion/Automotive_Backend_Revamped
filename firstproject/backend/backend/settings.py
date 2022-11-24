@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'firstApp',
     'rest_framework',
     'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
@@ -133,6 +134,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ALLOWED_HOSTS=['*']
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+
+AUTH_USER_MODEL='firstApp.User'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
 
 
 # REST_FRAMEWORK = {

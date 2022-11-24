@@ -1,88 +1,89 @@
 from django.shortcuts import render
 
-from django.http import JsonResponse
-from .models import userDetails
-
-from rest_framework.decorators import authentication_classes,permission_classes
 
 
-from .serializer import userSerializer
 
+# from rest_framework.decorators import authentication_classes,permission_classes
+# from django.contrib.auth.hashers import make_password
+# from django.contrib.auth.hashers import check_password
+# from django.contrib.auth.models import User
+from .models import User
+from django.contrib.auth import authenticate
+from.serializer import userSerializer
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.decorators import api_view
 
 from rest_framework.response import Response
 from django.core import serializers
 
-# @api_view(['GET'])
-# def getRoutes(request):
-#     routes=[
-#         # '/api/products',
-#         # '/api/products/creates',
-#         # '/api/products/upload',
-#         # '/api/products/<id>/',
-#     ]
-#     return Response(routes)
 
 
 
 
-# @api_view(['GET'])
-# def getmealitem(request):
-#     data_list = fooditems.objects.all()
-#     serializer = foodSerializer(data_list, many=True)
-    
-#     return Response(serializer.data)
+
+@api_view(['POST'])
+
+def register(request):
+    serializer=userSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
+
 
 @api_view(['POST'])
-def postuserdetails(request):
+def login(request):
+    email=request.data['email']
+    password=request.data['password']
+    user=User.objects.filter(email=email).first()
+    if user is None:
+        raise AuthenticationFailed('user not found')
+    if not user.check_password(password):
+        raise AuthenticationFailed('inncorrect password')
+    return Response({
+        'message':'success'
+    })
 
-    data = request.data.copy()
 
-    serializer = userSerializer(data=data)
 
-    # print(serializer)
 
-    if(serializer.is_valid()):
-        serializer.save()
-        return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
-    else:
-        return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
 
-@api_view(['GET'])
-def logindetails(request):
-    userName = request.GET.getlist("name")
-    passord =request.GET.getlist("password")
-#    user details validation steps
-#   if userName invalid
-#       return Response({'satus':'invalid','message':'Inavlid user name'})
-#   elsIf psw Invalid
-#       return Response({'satus':'invalid','message':'Inavlid user password'})
-#   if bothvalid
-#       return Response({'satus':'valid','message':' user LogedIn successfully','userId':'',userName:''})
-    return Response({'satus':'request recieved'})
+# @api_view(['POST'])
+# def postuserdetails(request):
+
+#     data = request.data.copy()
+#     data_password=request.POST.get('password')
+#     password=make_password(data_password)
+#     data['password']=password
+
+#     serializer = userSerializer(data=data)
+
+#     # print(serializer)
+
+#     if(serializer.is_valid()):
+#         serializer.save()
+#         return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
+#     else:
+#         return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
+
+
+
+# @api_view(['POST'])
+# def logindetails(request):
+   
+        
     
+#     return Response({'satus':'Done'})
 
 
 
-# for login authentication...
-
-# @api_view(['GET'])
-# @authentication_classes([SessionAuthentication, BasicAuthentication])
-# @permission_classes([IsAuthenticated])
-# def example_view(request, format=None):
-#     content = {
-#         'user': str(request.user),  # `django.contrib.auth.User` instance.
-#         'auth': str(request.auth),  # None
-#     }
-#     return Response(content)
 
 
-# for password encription
 
-# from django.contrib.auth.hashers import make_password
-# crew_password = 'take the input if you are using form'
-# form = FormName(commit=False)
-# form.crew_password=make_password(crew_password)
-# form.save()
+
+
+  
+
+
 
 # Create your views here

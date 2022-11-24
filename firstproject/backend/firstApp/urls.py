@@ -1,9 +1,9 @@
-from.import views
+from.views import register,login
 from django.urls import path
 
 urlpatterns=[
-    path('signup/',views.postuserdetails,name="routes"),
-    path('login/',views.logindetails,name="routes")
+    path('signup/',register,name="register"),
+    path('login/',login,name="routes")
     
     
 ]
