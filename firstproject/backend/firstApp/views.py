@@ -34,7 +34,6 @@ from django.core import serializers
 #     return Response(serializer.data)
 
 @api_view(['POST'])
-
 def postuserdetails(request):
 
     data = request.data.copy()
@@ -48,6 +47,19 @@ def postuserdetails(request):
         return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
     else:
         return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
+
+@api_view(['GET'])
+def logindetails(request):
+    userName = request.GET.getlist("name")
+    passord =request.GET.getlist("password")
+#    user details validation steps
+#   if userName invalid
+#       return Response({'satus':'invalid','message':'Inavlid user name'})
+#   elsIf psw Invalid
+#       return Response({'satus':'invalid','message':'Inavlid user password'})
+#   if bothvalid
+#       return Response({'satus':'valid','message':' user LogedIn successfully','userId':'',userName:''})
+    return Response({'satus':'request recieved'})
     
 
 
