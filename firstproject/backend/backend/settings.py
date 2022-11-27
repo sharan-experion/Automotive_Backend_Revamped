@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'firstApp',
     'rest_framework',
     'corsheaders',
+    'productapp',
     
 ]
 

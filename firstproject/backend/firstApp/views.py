@@ -43,17 +43,20 @@ def login(request):
         raise AuthenticationFailed('inncorrect password')
     payload={
         'id':user.id,
-        # 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=60),
-        # 'iat':datetime.datetime.utcnow()
+        'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=1),
+        'iat':datetime.datetime.utcnow()
     }
     token=jwt.encode(payload,'secret',algorithm='HS256')
     response=Response()
     response.set_cookie(key='jwt',value=token,httponly=True)
     response.data={
-        'jwt':token
+        'jwt':token,'username':user.name,"userID":user.id
 
     }
+    print(response)
+    
     return response
+
 
 
 @api_view(['GET'])
