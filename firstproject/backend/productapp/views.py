@@ -3,7 +3,9 @@ from rest_framework.decorators import api_view
 from .models import category,products
 from .serilizer import categorySerializer,productSerializer
 from rest_framework.response import Response
-
+from .utils import html_to_pdf
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 @api_view(['GET'])
 def getcategory(request):
@@ -51,6 +53,14 @@ def updateproduct(request,pk):
     product.save()
     serilizer=productSerializer(product,many=False)
     return Response(serilizer.data)
+
+@api_view(['GET'])
+def printproductdetails(request,key):
+    userid=key
+    data=products.objects.filter(userId=userid).filter()
+    open('templates/temp.html',"w").write(render_to_string('productdetaills.html',{'data':data}))
+    pdf=html_to_pdf('temp.html')
+    return HttpResponse(pdf,content_type="application/pdf")
 
     
     
