@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from .utils import html_to_pdf
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-
+from rest_framework.exceptions import AuthenticationFailed
+import jwt,datetime
 @api_view(['GET'])
 def getcategory(request):
 
@@ -27,8 +28,16 @@ def addproducts(request):
 
 
 @api_view(['GET'])
-def displayproducts(request,key):
-    userid=key
+def displayproducts(request):
+    a = request.headers['Authorization']
+    token= a.split()[1].replace('"', '')
+    if not token:
+        raise AuthenticationFailed('Unauthenticated!')
+    try:
+        payload=jwt.decode(token,'secret',algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
+    userid=payload['id']
     data_list =products.objects.filter(userId=userid).filter()
     print(data_list)
     serializer = productSerializer(data_list, many=True)

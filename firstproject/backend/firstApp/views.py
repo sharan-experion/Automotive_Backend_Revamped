@@ -62,7 +62,7 @@ def login(request):
 @api_view(['GET'])
 def userview(request):
     token=request.COOKIES.get('jwt')
-
+    
     if not token:
         raise AuthenticationFailed('Unauthenticated!')
     try:

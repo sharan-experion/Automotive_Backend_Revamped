@@ -23,5 +23,12 @@ def getcustomer(request,key):
     serializer = CustomerSerilizer(customer, many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+def addcustomer(request):
+    print(request)
+    serializer=CustomerSerilizer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response({'message':'Product Added Successfully'})
 
 # Create your views here.

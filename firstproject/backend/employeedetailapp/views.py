@@ -11,20 +11,18 @@ from rest_framework.response import Response
 
 from .serilizer import employeeSerializer
 
+from rest_framework.exceptions import AuthenticationFailed
+import jwt,datetime
+
 @api_view(['POST'])
 def Import_csv(request):
     # print('s')               
     # try:
         if request.method == 'POST' and request.FILES['employeedetails']:
           
-            # myfile = request.FILES['employeedetails']        
-            # fs = FileSystemStorage()
-            # filename = fs.save(myfile.name, myfile)
-            # uploaded_file_url = fs.url(filename)
-            # excel_file = uploaded_file_url
-            # print(excel_file) 
+          
             empexceldata = pd.read_excel(request.FILES['employeedetails'] )
-            # empexceldata = pd.read_csv('employeedetails.xlsx',encoding='utf-8')
+            
             
             print(empexceldata)
             dbframe = empexceldata
