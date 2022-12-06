@@ -22,6 +22,7 @@ urlpatterns = [
     path('product/', include('productapp.urls')),
     path('employee/', include('employeedetailapp.urls')),
     path('estimate/', include('estimateapp.urls')),
+    path('revenue/', include('revenueapp.urls')),
 ]
 
 

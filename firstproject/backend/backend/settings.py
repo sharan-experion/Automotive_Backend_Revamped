@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'employeedetailapp',
     'estimateapp',
     'crispy_forms',
+    'revenueapp',
     
     
     
@@ -145,6 +146,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL='firstApp.User'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 
 

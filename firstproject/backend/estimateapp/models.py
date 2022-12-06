@@ -16,4 +16,25 @@ class CustomerDetails(models.Model):
     userId=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
    
 
+class Estimation_details(models.Model):
+    vehicleNumber=models.ForeignKey(CustomerDetails,on_delete=models.CASCADE,null=True)
+    date_of_estimation=models.DateField('%d-%m-%Y')
+    total_cost=models.DecimalField(max_digits=15, decimal_places=2)
+    work_status=models.BooleanField()
+    userId=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+
+class Estimate_Products(models.Model):
+    estimateId=models.ForeignKey(Estimation_details,on_delete=models.CASCADE,null=True)
+    estimate_product_name=models.CharField(max_length=200)
+    estimateProductsId=models.BigIntegerField()
+    productQuanity=models.IntegerField()
+    productPrice=models.DecimalField(max_digits=15, decimal_places=2 ,null=True)
+
+class Estimate_Services(models.Model):
+    estimateId=models.ForeignKey(Estimation_details,on_delete=models.CASCADE,null=True)
+    estimate_service_name=models.CharField(max_length=200)
+    estimateServiceId=models.BigIntegerField()
+    estimatePrice=models.DecimalField(max_digits=15, decimal_places=2 ,null=True)
+    
+
 # Create your models here.

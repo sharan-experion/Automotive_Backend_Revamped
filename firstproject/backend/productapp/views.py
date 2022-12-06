@@ -30,7 +30,7 @@ def addproducts(request):
 @api_view(['GET'])
 def displayproducts(request):
     a = request.headers['Authorization']
-    token= a.split()[1].replace('"', '')
+    token= a.split()[1]
     if not token:
         raise AuthenticationFailed('Unauthenticated!')
     try:
