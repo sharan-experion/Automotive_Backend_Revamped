@@ -10,7 +10,7 @@ from estimateapp.serilizer import EstimateSerilizer
 def getrevenuereport(request,key):
     user=key
     estimatedetails = Estimation_details.objects.filter(userId=user).filter()
-    # serializer = EstimateSerilizer(estimatedetails, many=True)
+    
     chartdata={}
     for index in estimatedetails:
         key=str(index.date_of_estimation)
@@ -18,8 +18,8 @@ def getrevenuereport(request,key):
             chartdata[key]+=int(index.total_cost)
         else:
             chartdata[key]=int(index.total_cost)
-    print("******************************")
-    print(chartdata)
+    
+        
    
     return Response(chartdata)
 

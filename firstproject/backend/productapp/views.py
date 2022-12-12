@@ -8,13 +8,15 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from rest_framework.exceptions import AuthenticationFailed
 import jwt,datetime
+from rest_framework import status
+import pandas as pd
 @api_view(['GET'])
 def getcategory(request):
 
     data_list = category.objects.all()
     serializer = categorySerializer(data_list, many=True)
     
-    return Response(serializer.data)
+    return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 
 
@@ -29,7 +31,7 @@ def addproducts(request):
 
 @api_view(['GET'])
 def displayproducts(request):
-    a = request.headers['Authorization']
+    a= request.headers['Authorization']
     token= a.split()[1]
     if not token:
         raise AuthenticationFailed('Unauthenticated!')
@@ -37,8 +39,8 @@ def displayproducts(request):
         payload=jwt.decode(token,'secret',algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Unauthenticated!')
-    userid=payload['id']
-    data_list =products.objects.filter(userId=userid).filter()
+    # userid=payload['id']
+    data_list =products.objects.filter().filter()
     print(data_list)
     serializer = productSerializer(data_list, many=True)
     return Response(serializer.data)
@@ -64,13 +66,24 @@ def updateproduct(request,pk):
     return Response(serilizer.data)
 
 @api_view(['GET'])
-def printproductdetails(request,key):
-    userid=key
-    data=products.objects.filter(userId=userid).filter()
+def printproductdetails(request):
+    # userid=key
+    data=products.objects.filter().filter()
     open('templates/temp.html',"w").write(render_to_string('productdetaills.html',{'data':data}))
     pdf=html_to_pdf('temp.html')
     return HttpResponse(pdf,content_type="application/pdf")
 
+@api_view(['POST'])
+def productexcel(request):
+        if request.method == 'POST' and request.FILES['productdetails']:
+            empexceldata = pd.read_excel(request.FILES['productdetails'] )
+            print(empexceldata)
+            dbframe = empexceldata
+            for dbframe in dbframe.itertuples():
+                obj = products.objects.create(productName=dbframe.productName,productPrice=dbframe.productPrice,
+                                                 productQuantity=dbframe.productQuntity,categoryId_id=dbframe.categoryId,userId_id=dbframe.userId)
+                obj.save()
+        return Response({'message':'File Added Successfully'})
     
     
       

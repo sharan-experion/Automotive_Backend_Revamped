@@ -12,7 +12,7 @@ class tbl_Employee(models.Model):
     
     gender = models.CharField(max_length=10, default='',null=True)
     qualification = models.CharField(max_length=50,default='',null=True)
-    userId=models.CharField(max_length=150,null=True)
+    userId=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.Name

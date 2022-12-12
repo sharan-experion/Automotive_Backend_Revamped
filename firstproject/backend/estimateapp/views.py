@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from .models import  service_Details,CustomerDetails,Estimation_details,Estimate_Services,Estimate_Products
 from .serilizer import serviceSerilizer,CustomerSerilizer,EstimateSerilizer,estimateproductSerilizer,estimateServiceSerilizer
 from  django.db import connection
+from productapp .models import products
+from productapp.serilizer import productSerializer
 
 @api_view(['GET'])
 def getservices(request):
@@ -14,12 +16,22 @@ def getservices(request):
     
     return Response(serializer.data)
 
-
 @api_view(['GET'])
-def getcustomer(request,key):
-    vehicleno=key
+def getproduct_for_estimation(request,key):
+    user=key
+    service = products.objects.filter(userId=user).filter()
+    serializer = productSerializer(service, many=True)
+    
+    return Response(serializer.data)
 
-    customer = CustomerDetails.objects.filter(vehicleNumber=vehicleno).filter()
+
+@api_view(['POST'])
+def getcustomer(request,key,user):
+    vehicleno=key
+    userid=user
+    print(userid)
+
+    customer = CustomerDetails.objects.filter(userId=userid,vehicleNumber=vehicleno).filter()
     serializer = CustomerSerilizer(customer, many=True)
     return Response(serializer.data)
 
@@ -29,7 +41,7 @@ def addcustomer(request):
     serializer=CustomerSerilizer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response({'message':'Product Added Successfully'})
+    return Response({'message':'Customer Added Successfully'})
 
 @api_view(['POST'])
 def addestimate(request):
@@ -90,9 +102,10 @@ def addestimate(request):
 #     return Response(final_list)
    
 @api_view(['GET'])
-def getservicehistory(request,key):
+def getservicehistory(request,key,user):
     vehicleno=key
-    estimatedetails = Estimation_details.objects.filter(vehicleNumber=vehicleno).filter()
+    userid=user
+    estimatedetails = Estimation_details.objects.filter(userId=userid,vehicleNumber=vehicleno).filter()
     serializer = EstimateSerilizer(estimatedetails, many=True)
     return Response(serializer.data)
 @api_view(['GET'])
