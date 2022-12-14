@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from rest_framework import  status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import  service_Details,CustomerDetails,Estimation_details,Estimate_Services,Estimate_Products
@@ -17,12 +17,12 @@ def getservices(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def getproduct_for_estimation(request,key):
-    user=key
-    service = products.objects.filter(userId=user).filter()
+def getproduct_for_estimation(request):
+    # user=key
+    service = products.objects.filter().filter()
     serializer = productSerializer(service, many=True)
     
-    return Response(serializer.data)
+    return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -39,9 +39,11 @@ def getcustomer(request,key,user):
 def addcustomer(request):
     print(request)
     serializer=CustomerSerilizer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({'message':'Customer Added Successfully'})
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response({'message':'Customer Added Successfully'})
+    else:
+        return Response({'message':'PLEASE ENTER THE VALID DATA'})
 
 @api_view(['POST'])
 def addestimate(request):
@@ -71,35 +73,10 @@ def addestimate(request):
         serviceserilizer=estimateServiceSerilizer(data=item)
         serviceserilizer.is_valid(raise_exception=True)
         serviceserilizer.save()
-
-  
-    print("********************************************")
-    
-    
     return Response({'message':'Estimation Added Successfully'})
 
 
-# @api_view(['GET'])
-# def getservicehistory(request,key):
-#     vehicleno=key
 
-#     cursor = connection.cursor()
-#     cursor.execute("SELECT estimateapp_estimation_details.date_of_estimation,estimateapp_estimation_details.total_cost,estimateapp_estimation_details.work_status,estimateapp_estimate_products.estimate_product_name,estimateapp_estimate_products.productQuanity,estimateapp_estimate_services.estimate_service_name from estimateapp_estimation_details inner join estimateapp_estimate_products on estimateapp_estimation_details.id=estimateapp_estimate_products.estimateId_id inner join estimateapp_estimate_services on estimateapp_estimation_details.id=estimateapp_estimate_services.estimateId_id where estimateapp_estimation_details.vehicleNumber_id=%s",[vehicleno])
-
-#     result = cursor.fetchall()
-
-#     final_list=[]
-#     for item in result:
-#         singleitem={}
-#         singleitem["date_of_estimation"]=item[0]
-#         singleitem["Total_cost"]=item[1]
-#         singleitem["Work_status"]=item[2]
-#         singleitem["estimate_product_name"]=item[3]
-#         singleitem["estimate_qunatity"]=item[4]
-#         singleitem["estimate_service_name"]=item[5]
-       
-#         final_list.append(singleitem)
-#     return Response(final_list)
    
 @api_view(['GET'])
 def getservicehistory(request,key,user):
@@ -107,7 +84,8 @@ def getservicehistory(request,key,user):
     userid=user
     estimatedetails = Estimation_details.objects.filter(userId=userid,vehicleNumber=vehicleno).filter()
     serializer = EstimateSerilizer(estimatedetails, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data,status=status.HTTP_200_OK)
+
 @api_view(['GET'])
 def getestimateproduct(request,key):
     estid=key
@@ -122,7 +100,29 @@ def getestimateservices(request,key):
     return Response(serializer.data)
     
 
+@api_view(['PUT'])
+def update_estimate_product(request):
+    estimate_Product=request.data['products']
+    for item in estimate_Product:
+        proId=item['estimateProductsId']
+        pro = products.objects.get(id=proId)
+        pro.productQuantity=pro.productQuantity-item['productQuanity']
+        pro.save() 
+    return Response()
+
+@api_view(['PUT'])
+def update_Work_status(request,key):
+    status=request.data
+    estimation=Estimation_details.objects.get(id=key)
+    estimation.work_status=status['status']
+    estimation.save()
+    return Response()
 
 
 
-# Create your views here.
+
+
+
+
+
+

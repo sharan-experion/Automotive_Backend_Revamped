@@ -7,6 +7,7 @@ from .utils import html_to_pdf
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import viewsets
 import jwt,datetime
 from rest_framework import status
 import pandas as pd
@@ -22,17 +23,23 @@ def getcategory(request):
 
 @api_view(['POST'])
 def addproducts(request):
-    print(request)
+    token= request.headers['Authorization']
+    if not token:
+        raise AuthenticationFailed('Unauthenticated!')
+    try:
+        payload=jwt.decode(token,'secret',algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
+    
     serializer=productSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
     return Response({'message':'Product Added Successfully'})
 
 
 @api_view(['GET'])
 def displayproducts(request):
-    a= request.headers['Authorization']
-    token= a.split()[1]
+    token= request.headers['Authorization']
     if not token:
         raise AuthenticationFailed('Unauthenticated!')
     try:
@@ -55,6 +62,7 @@ def sortproduct(request):
 
 @api_view(['PUT'])
 def updateproduct(request,pk):
+    
     data =request.data
     product = products.objects.get(id=pk)
     product.productName=data['name']
@@ -65,13 +73,20 @@ def updateproduct(request,pk):
     serilizer=productSerializer(product,many=False)
     return Response(serilizer.data)
 
-@api_view(['GET'])
-def printproductdetails(request):
-    # userid=key
-    data=products.objects.filter().filter()
-    open('templates/temp.html',"w").write(render_to_string('productdetaills.html',{'data':data}))
-    pdf=html_to_pdf('temp.html')
-    return HttpResponse(pdf,content_type="application/pdf")
+
+class printproductdetails(viewsets.ModelViewSet):
+    def list(self,request,*args,**kwargs):
+        data=products.objects.filter().filter()
+        open('templates/temp.html',"w").write(render_to_string('productdetaills.html',{'data':data}))
+        pdf=html_to_pdf('temp.html')
+        return HttpResponse(pdf,content_type="application/pdf")
+# @api_view(['GET'])
+# def printproductdetails(request):
+#     # userid=key
+#     data=products.objects.filter().filter()
+#     open('templates/temp.html',"w").write(render_to_string('productdetaills.html',{'data':data}))
+#     pdf=html_to_pdf('temp.html')
+#     return HttpResponse(pdf,content_type="application/pdf")
 
 @api_view(['POST'])
 def productexcel(request):

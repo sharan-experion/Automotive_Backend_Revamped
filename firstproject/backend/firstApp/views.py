@@ -87,34 +87,7 @@ def logout(request):
 
 
 
-# @api_view(['POST'])
-# def postuserdetails(request):
-
-#     data = request.data.copy()
-#     data_password=request.POST.get('password')
-#     password=make_password(data_password)
-#     data['password']=password
-
-#     serializer = userSerializer(data=data)
-
-#     # print(serializer)
-
-#     if(serializer.is_valid()):
-#         serializer.save()
-#         return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
-#     else:
-#         return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
-
-
-
-# @api_view(['POST'])
-# def logindetails(request):
-   
-        
-    
-#     return Response({'satus':'Done'})
-
-
+# 
 
 
 
