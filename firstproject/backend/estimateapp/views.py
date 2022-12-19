@@ -34,7 +34,7 @@ def getcustomer(request,key,user):
     customer = CustomerDetails.objects.filter(userId=userid,vehicleNumber=vehicleno).filter()
     serializer = CustomerSerilizer(customer, many=True)
     return Response(serializer.data)
-
+# used to add  newcustomer
 @api_view(['POST'])
 def addcustomer(request):
     print(request)
@@ -45,6 +45,7 @@ def addcustomer(request):
     else:
         return Response({'message':'PLEASE ENTER THE VALID DATA'})
 
+# add estimate details
 @api_view(['POST'])
 def addestimate(request):
     
@@ -77,7 +78,7 @@ def addestimate(request):
 
 
 
-   
+#get  service history of  particular customer    
 @api_view(['GET'])
 def getservicehistory(request,key,user):
     vehicleno=key
@@ -86,12 +87,15 @@ def getservicehistory(request,key,user):
     serializer = EstimateSerilizer(estimatedetails, many=True)
     return Response(serializer.data,status=status.HTTP_200_OK)
 
+# get estimated product for a particular estimation
 @api_view(['GET'])
 def getestimateproduct(request,key):
     estid=key
     estimatedetails = Estimate_Products.objects.filter(estimateId=estid).filter()
     serializer = estimateproductSerilizer(estimatedetails, many=True)
     return Response(serializer.data)
+
+# get estimated service for a particular estimation
 @api_view(['GET'])
 def getestimateservices(request,key):
     estid=key
@@ -110,6 +114,7 @@ def update_estimate_product(request):
         pro.save() 
     return Response()
 
+# To update workstatus to 'complete'
 @api_view(['PUT'])
 def update_Work_status(request,key):
     status=request.data
